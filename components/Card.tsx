@@ -8,7 +8,13 @@ import DropIndicator from "./DropIndicator";
  * Represents a task card in the kanban board
  * Each card can be dragged and dropped between columns
  */
-const TodoCard = ({ title, id, column, handleDragStart }: Card) => {
+const TodoCard = ({
+  title,
+  id,
+  column,
+  handleDragStart,
+  setBurnActive,
+}: Card) => {
   return (
     <>
       {/* 
@@ -21,13 +27,15 @@ const TodoCard = ({ title, id, column, handleDragStart }: Card) => {
         layout // Animate layout changes with Framer Motion
         layoutId={id} // Used by Framer Motion for smooth transitions
         draggable="true" // Make the card draggable
-        onDragStart={(event) =>
+        onDragStart={(event) => {
           handleDragStart?.(event as unknown as React.DragEvent<HTMLElement>, {
             title,
             id,
             column,
-          })
-        }
+          });
+          setBurnActive?.(true);
+        }}
+        
         className="cursor-grab rounded border border-neutral-700 bg-neutral-800 p-3 active:cursor-grabbing"
       >
         <p className="text-sm text-neutral-100">{title}</p>

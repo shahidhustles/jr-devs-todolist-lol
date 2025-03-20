@@ -1,3 +1,4 @@
+
 import { getIndicators } from "./getIndicators";
 
 /**
@@ -9,8 +10,10 @@ import { getIndicators } from "./getIndicators";
  */
 export const clearHighlights = (
   els?: HTMLElement[] | NodeListOf<Element> | null,
-  column?: string
+  column?: string,
+
 ) => {
+
   if (!els && !column) {
     console.warn("clearHighlights: Either els or column must be provided");
     return;

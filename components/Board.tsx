@@ -1,9 +1,9 @@
 "use client";
 
 import { DEFAULT_CARDS } from "@/lib/defaultCards";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Column from "./Column";
-import BurnBarrel from "./BurnBarrel";
+import BurnBarrel from "./BurnBarrel"; // Import BurnBarrel
 
 /**
  * Card interface represents a task in the kanban board
@@ -14,25 +14,26 @@ export interface Card {
   id: string;
   column: string;
   handleDragStart?: (event: React.DragEvent<HTMLElement>, card: Card) => void;
+  setBurnActive?: Dispatch<SetStateAction<boolean>>;
 }
 
 /**
- * Main kanban board component that orchestrates the entire UI
+ * Main kanban board component
  * Contains all columns and manages the shared cards state
  */
 const Board = () => {
-  // Single source of truth for all cards across all columns
   const [cards, setCards] = useState<Card[]>(DEFAULT_CARDS);
+  const [burnActive, setBurnActive] = useState<boolean>(false);
 
   return (
-    <div className="flex h-full w-full gap-3 overflow-scroll p-12">
-      {/* Render each column with appropriate cards */}
+    <div className="flex h-full w-full gap-3 overflow-scroll p-12 relative ">
       <Column
         title="Backlog"
         column="backlog"
         headingColor="text-neutral-500"
         cards={cards}
         setCards={setCards}
+        setBurnActive={setBurnActive}
       />
       <Column
         title="TODO"
@@ -40,6 +41,7 @@ const Board = () => {
         headingColor="text-yellow-200"
         cards={cards}
         setCards={setCards}
+        setBurnActive={setBurnActive}
       />
       <Column
         title="In progress"
@@ -47,6 +49,7 @@ const Board = () => {
         headingColor="text-blue-200"
         cards={cards}
         setCards={setCards}
+        setBurnActive={setBurnActive}
       />
       <Column
         title="Complete"
@@ -54,10 +57,15 @@ const Board = () => {
         headingColor="text-emerald-200"
         cards={cards}
         setCards={setCards}
+        setBurnActive={setBurnActive}
       />
 
-      {/* Burn barrel lets you delete cards by dropping them on it */}
-      <BurnBarrel setCards={setCards} />
+      {/* Add burn barrel in a fixed position at the bottom right */}
+      {burnActive && (
+        <div className="absolute bottom-8 right-8">
+          <BurnBarrel setCards={setCards} setBurnActive={setBurnActive} />
+        </div>
+      )}
     </div>
   );
 };

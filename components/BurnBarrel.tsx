@@ -7,8 +7,10 @@ import { FiTrash } from "react-icons/fi";
 
 const BurnBarrel = ({
   setCards,
+  setBurnActive,
 }: {
   setCards: React.Dispatch<React.SetStateAction<Card[]>>;
+  setBurnActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [active, setActive] = useState(false);
 
@@ -19,6 +21,7 @@ const BurnBarrel = ({
 
   const handleDragLeave = () => {
     setActive(false);
+    setBurnActive(false);
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
@@ -27,6 +30,7 @@ const BurnBarrel = ({
     setCards((pv: Card[]) => pv.filter((c: Card) => c.id !== cardId));
 
     setActive(false);
+    setBurnActive(false);
   };
 
   return (

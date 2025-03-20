@@ -16,6 +16,8 @@ type ColumnType = {
   cards: Card[];
   column: string;
   setCards: React.Dispatch<React.SetStateAction<Card[]>>;
+
+  setBurnActive: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -28,6 +30,8 @@ const Column = ({
   cards,
   column,
   setCards,
+
+  setBurnActive,
 }: ColumnType) => {
   // Track if a card is currently being dragged over this column
   const [active, setActive] = useState<boolean>(false);
@@ -46,17 +50,20 @@ const Column = ({
    */
   const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
     const cardId = e.dataTransfer.getData("cardId");
-
     setActive(false);
-    clearHighlights(null, column); // Clear drop indicators
+    clearHighlights(null, column); // Clear drop indicators when drag ends
 
-    // Find the nearest drop position
+    // Find the nearest indicator to drop position
     const indicators = getIndicators(column);
     const { element } = getNearestIndicator(e, indicators);
 
-    // If element is null, return early
-    if (!element) return;
+    if (!element) {
+      // If no valid drop target was found, we still need to hide the burn barrel
+      setBurnActive(false);
+      return;
+    }
 
+    //get its id to compare with card id
     const before = element.dataset.before || "-1";
 
     // Only update if the card position actually changes
@@ -65,7 +72,10 @@ const Column = ({
 
       // Find the card being moved
       let cardToTransfer = copy.find((c) => c.id === cardId);
-      if (!cardToTransfer) return;
+      if (!cardToTransfer) {
+        setBurnActive(false);
+        return;
+      }
 
       // Update its column to the current column
       cardToTransfer = { ...cardToTransfer, column };
@@ -81,7 +91,10 @@ const Column = ({
       } else {
         // If dropping between cards
         const insertAtIndex = copy.findIndex((el) => el.id === before);
-        if (insertAtIndex === undefined) return;
+        if (insertAtIndex === undefined) {
+          setBurnActive(false);
+          return;
+        }
 
         copy.splice(insertAtIndex, 0, cardToTransfer);
       }
@@ -89,6 +102,9 @@ const Column = ({
       // Update the cards state
       setCards(copy);
     }
+
+    // Only hide the burn barrel after successful placement
+    setBurnActive(false);
   };
 
   /**
@@ -115,7 +131,7 @@ const Column = ({
   const filteredCards = cards.filter((c) => c.column === column);
 
   return (
-    <div className="w-56 shrink-0">
+    <div className="w-56 shrink-0 ">
       <div className="mb-3 flex items-center justify-between">
         <h3 className={`font-medium ${headingColor}`}>{title}</h3>
         <span className="rounded text-sm text-neutral-400">
@@ -133,15 +149,22 @@ const Column = ({
         {/* Render all cards in this column */}
         {filteredCards.map((c) => {
           return (
-            <TodoCard key={c.id} {...c} handleDragStart={handleDragStart} />
+            <TodoCard
+              key={c.id}
+              {...c}
+              handleDragStart={handleDragStart}
+              setBurnActive={setBurnActive}
+            />
           );
         })}
+        
 
         {/* Add a final drop indicator at the bottom of the column */}
         <DropIndicator beforeId={null} column={column} />
 
         {/* Button to add new cards to this column */}
         <AddCard column={column} setCards={setCards} />
+     
       </div>
     </div>
   );
