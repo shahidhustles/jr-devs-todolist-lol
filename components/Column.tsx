@@ -133,7 +133,11 @@ const Column = ({
   return (
     <div className="w-56 shrink-0 ">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className={`font-medium ${headingColor}`}>{title}</h3>
+        <h3
+          className={`font-medium ${headingColor} [text-shadow:0_0_4px_currentColor,0_0_7px_rgba(255,90,200,0.4)]`}
+        >
+          {title}
+        </h3>
         <span className="rounded text-sm text-neutral-400">
           {filteredCards.length}
         </span>
@@ -157,14 +161,12 @@ const Column = ({
             />
           );
         })}
-        
 
         {/* Add a final drop indicator at the bottom of the column */}
         <DropIndicator beforeId={null} column={column} />
 
         {/* Button to add new cards to this column */}
         <AddCard column={column} setCards={setCards} />
-     
       </div>
     </div>
   );
