@@ -9,30 +9,28 @@ import { highlightIndicator } from "@/lib/highlightIndicator";
 import TodoCard from "./Card";
 import DropIndicator from "./DropIndicator";
 import AddCard from "./AddCard";
+import { useColumnStore } from "@/store/useColumnStore";
+import { Dispatch, SetStateAction } from "react";
 
-type ColumnType = {
+type ColumnProps = {
   title: string;
-  headingColor: string;
+  column: string; // Changed from columnName to match Board.tsx
+  headingColor: string; // Added missing prop
   cards: Card[];
-  column: string;
-  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
-
-  setBurnActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setBurnActive: Dispatch<SetStateAction<boolean>>; // Added missing prop
 };
 
 /**
  * Represents a column in the kanban board (Backlog, Todo, Doing, Done)
  * Handles drag and drop functionality for cards within the column
  */
-const Column = ({
+export default function Column({
   title,
+  column,
   headingColor,
   cards,
-  column,
-  setCards,
-
   setBurnActive,
-}: ColumnType) => {
+}: ColumnProps) {
   // Track if a card is currently being dragged over this column
   const [active, setActive] = useState<boolean>(false);
 
@@ -63,47 +61,19 @@ const Column = ({
       return;
     }
 
-    //get its id to compare with card id
-    const before = element.dataset.before || "-1";
+    // Get the id of the card to insert before
+    const beforeId = element.dataset.before || "-1";
 
     // Only update if the card position actually changes
-    if (before !== cardId) {
-      let copy = [...cards];
+    if (beforeId !== cardId) {
+      // Get reorderCards function from the store
+      const { reorderCards } = useColumnStore.getState();
 
-      // Find the card being moved
-      let cardToTransfer = copy.find((c) => c.id === cardId);
-      if (!cardToTransfer) {
-        setBurnActive(false);
-        return;
-      }
-
-      // Update its column to the current column
-      cardToTransfer = { ...cardToTransfer, column };
-
-      // Remove it from the old position
-      copy = copy.filter((c) => c.id !== cardId);
-
-      const moveToBack = before === "-1";
-
-      if (moveToBack) {
-        // If dropping at the end
-        copy.push(cardToTransfer);
-      } else {
-        // If dropping between cards
-        const insertAtIndex = copy.findIndex((el) => el.id === before);
-        if (insertAtIndex === undefined) {
-          setBurnActive(false);
-          return;
-        }
-
-        copy.splice(insertAtIndex, 0, cardToTransfer);
-      }
-
-      // Update the cards state
-      setCards(copy);
+      // Update card position using the new function
+      reorderCards(cardId, column, beforeId);
     }
 
-    // Only hide the burn barrel after successful placement
+    // Hide the burn barrel after successful placement
     setBurnActive(false);
   };
 
@@ -166,9 +136,8 @@ const Column = ({
         <DropIndicator beforeId={null} column={column} />
 
         {/* Button to add new cards to this column */}
-        <AddCard column={column} setCards={setCards} />
+        <AddCard column={column} />
       </div>
     </div>
   );
-};
-export default Column;
+}

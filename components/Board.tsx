@@ -1,10 +1,11 @@
 "use client";
 
-import { DEFAULT_CARDS } from "@/lib/defaultCards";
+// import { DEFAULT_CARDS } from "@/lib/defaultCards";
 import { Dispatch, SetStateAction, useState } from "react";
 import Column from "./Column";
 import BurnBarrel from "./BurnBarrel"; // Import BurnBarrel
 import { BackgroundBeamsWithCollision } from "./ui/background-beams-with-collision";
+import { useColumnStore } from "@/store/useColumnStore";
 
 /**
  * Card interface represents a task in the kanban board
@@ -23,8 +24,13 @@ export interface Card {
  * Contains all columns and manages the shared cards state
  */
 const Board = () => {
-  const [cards, setCards] = useState<Card[]>(DEFAULT_CARDS);
+  const { cards, moveCardToTrash } = useColumnStore();
   const [burnActive, setBurnActive] = useState<boolean>(false);
+
+  // Group cards by column
+  const todoCards = cards.filter((card) => card.column === "todo");
+  const inProgressCards = cards.filter((card) => card.column === "inProgress");
+  const doneCards = cards.filter((card) => card.column === "done");
 
   return (
     <BackgroundBeamsWithCollision>
@@ -34,38 +40,37 @@ const Board = () => {
           column="backlog"
           headingColor="text-neutral-500"
           cards={cards}
-          setCards={setCards}
           setBurnActive={setBurnActive}
         />
         <Column
           title="TODO"
           column="todo"
           headingColor="text-yellow-200"
-          cards={cards}
-          setCards={setCards}
+          cards={todoCards}
           setBurnActive={setBurnActive}
         />
         <Column
           title="In progress"
-          column="doing"
+          column="inProgress"
           headingColor="text-blue-200"
-          cards={cards}
-          setCards={setCards}
+          cards={inProgressCards}
           setBurnActive={setBurnActive}
         />
         <Column
           title="Complete"
           column="done"
           headingColor="text-emerald-200"
-          cards={cards}
-          setCards={setCards}
+          cards={doneCards}
           setBurnActive={setBurnActive}
         />
 
         {/* Add burn barrel in a fixed position at the bottom right */}
         {burnActive && (
-          <div className="absolute bottom-8 right-8">
-            <BurnBarrel setCards={setCards} setBurnActive={setBurnActive} />
+          <div className="absolute bottom-8 right-50%">
+            <BurnBarrel
+              moveCardToTrash={moveCardToTrash}
+              setBurnActive={setBurnActive}
+            />
           </div>
         )}
       </div>

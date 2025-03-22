@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "./Board";
 import { FaFire } from "react-icons/fa";
 import { FiTrash } from "react-icons/fi";
+import { Dispatch, SetStateAction } from "react";
 
-const BurnBarrel = ({
-  setCards,
-  setBurnActive,
-}: {
-  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
-  setBurnActive: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+type BurnBarrelProps = {
+  moveCardToTrash: (cardId: string) => void;
+  setBurnActive: Dispatch<SetStateAction<boolean>>;
+};
+
+const BurnBarrel = ({ moveCardToTrash, setBurnActive }: BurnBarrelProps) => {
   const [active, setActive] = useState(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
@@ -24,24 +23,22 @@ const BurnBarrel = ({
     setBurnActive(false);
   };
 
-  const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     const cardId = e.dataTransfer.getData("cardId");
-
-    setCards((pv: Card[]) => pv.filter((c: Card) => c.id !== cardId));
-
+    moveCardToTrash(cardId);
     setActive(false);
     setBurnActive(false);
   };
 
   return (
     <div
-      onDrop={handleDragEnd}
+      onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${
         active
           ? "border-red-800 bg-red-800/20 text-red-500"
-          : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
+          : "border-gray-500 bg-black text-neutral-500"
       }`}
     >
       {active ? <FaFire className="animate-bounce" /> : <FiTrash />}

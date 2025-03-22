@@ -17,9 +17,9 @@ export const DEFAULT_CARDS = [
     {
       title: "Refactor context providers to use Zustand",
       id: "8",
-      column: "doing",
+      column: "inProgress",
     },
-    { title: "Add logging to daily CRON", id: "9", column: "doing" },
+    { title: "Add logging to daily CRON", id: "9", column: "inProgress" },
     // DONE
     {
       title: "Set up DD dashboards for Lambda listener",

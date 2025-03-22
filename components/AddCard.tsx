@@ -1,34 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "./Board";
 import { motion } from "framer-motion";
 import { FiPlus } from "react-icons/fi";
+import { v4 as uuidv4 } from "uuid";
+import { useColumnStore } from "@/store/useColumnStore";
 
-const AddCard = ({
-  column,
-  setCards,
-}: {
+type AddCardProps = {
   column: string;
-  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
-}) => {
-  const [text, setText] = useState<string>("");
+};
+
+export default function AddCard({ column }: AddCardProps) {
+  const [title, setTitle] = useState("");
   const [adding, setAdding] = useState<boolean>(false);
+  const { addCard } = useColumnStore();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!title.trim()) return;
 
-    if (!text.trim().length) return;
-
-    const newCard = {
-      column,
-      title: text.trim(),
-      id: Math.random().toString(),
-    };
-
-    setCards((pv) => [...pv, newCard]);
+    addCard({
+      id: uuidv4(),
+      title,
+      column: column,
+    });
 
     setAdding(false);
+    setTitle("");
   };
 
   return (
@@ -36,7 +34,7 @@ const AddCard = ({
       {adding ? (
         <motion.form layout onSubmit={handleSubmit}>
           <textarea
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             autoFocus
             placeholder="Add new task..."
             className="w-full rounded border border-violet-400 bg-violet-400/20 p-3 text-sm text-neutral-50 placeholder-violet-300 focus:outline-0"
@@ -69,6 +67,4 @@ const AddCard = ({
       )}
     </>
   );
-};
-
-export default AddCard;
+}
