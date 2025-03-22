@@ -102,8 +102,12 @@ const CollisionMechanism = ({
   containerRef,
   beamOptions = {},
 }: {
-  containerRef: React.RefObject<HTMLDivElement>;
-  parentRef: React.RefObject<HTMLDivElement>;
+  containerRef:
+    | React.RefObject<HTMLDivElement | null>
+    | React.RefObject<HTMLDivElement>;
+  parentRef:
+    | React.RefObject<HTMLDivElement | null>
+    | React.RefObject<HTMLDivElement>;
   beamOptions?: {
     initialX?: number;
     translateX?: number;
