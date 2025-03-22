@@ -1,4 +1,7 @@
-export default function MainPage() {
+
+export default async function MainPage() {
+
+
   return (
     <main className="bg-gradient-to-b from-[#120329] from-0% via-[#2d0252] via-33% to-[#8e027b] to-50%">
       <div className="h-screen w-full mx-auto container">

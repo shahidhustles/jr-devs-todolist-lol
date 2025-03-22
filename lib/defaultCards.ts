@@ -1,29 +1,53 @@
 export const DEFAULT_CARDS = [
-    // BACKLOG
-    { title: "Look into render bug in dashboard", id: "1", column: "backlog" },
-    { title: "SOX compliance checklist", id: "2", column: "backlog" },
-    { title: "[SPIKE] Migrate to Azure", id: "3", column: "backlog" },
-    { title: "Document Notifications service", id: "4", column: "backlog" },
-    // TODO
-    {
-      title: "Research DB options for new microservice",
-      id: "5",
-      column: "todo",
-    },
-    { title: "Postmortem for outage", id: "6", column: "todo" },
-    { title: "Sync with product on Q3 roadmap", id: "7", column: "todo" },
-  
-    // DOING
-    {
-      title: "Refactor context providers to use Zustand",
-      id: "8",
-      column: "inProgress",
-    },
-    { title: "Add logging to daily CRON", id: "9", column: "inProgress" },
-    // DONE
-    {
-      title: "Set up DD dashboards for Lambda listener",
-      id: "10",
-      column: "done",
-    },
-  ];
+  // BACKLOG
+  {
+    title: "Find my missing left sock from the laundry",
+    id: "1",
+    column: "backlog",
+  },
+  {
+    title: "Learn to make the perfect avocado toast",
+    id: "2",
+    column: "backlog",
+  },
+  {
+    title: "Invent a time machine to get more sleep",
+    id: "3",
+    column: "backlog",
+  },
+  {
+    title: "Figure out why my cat stares at empty walls",
+    id: "4",
+    column: "backlog",
+  },
+  // TODO
+  {
+    title: "Take a nap... for productivity reasons",
+    id: "5",
+    column: "todo",
+  },
+  { title: "Perfect my coffee-to-work ratio", id: "6", column: "todo" },
+  {
+    title: "Create a playlist for pretending to work",
+    id: "7",
+    column: "todo",
+  },
+
+  // DOING
+  {
+    title: "Practicing the art of looking busy",
+    id: "8",
+    column: "inProgress",
+  },
+  {
+    title: "Testing how many snacks fit in desk drawer",
+    id: "9",
+    column: "inProgress",
+  },
+  // DONE
+  {
+    title: "Mastered the art of attending meetings on mute",
+    id: "10",
+    column: "done",
+  },
+];

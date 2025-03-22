@@ -11,6 +11,8 @@ import DropIndicator from "./DropIndicator";
 import AddCard from "./AddCard";
 import { useColumnStore } from "@/store/useColumnStore";
 import { Dispatch, SetStateAction } from "react";
+import { useUser } from "@clerk/nextjs";
+
 
 type ColumnProps = {
   title: string;
@@ -33,7 +35,10 @@ export default function Column({
 }: ColumnProps) {
   // Track if a card is currently being dragged over this column
   const [active, setActive] = useState<boolean>(false);
-
+  const { user } = useUser();
+  if (!user) {
+    throw new Error("unauthorized");
+  }
   /**
    * Called when a card starts being dragged
    * Stores the card ID in the drag event data
@@ -70,7 +75,7 @@ export default function Column({
       const { reorderCards } = useColumnStore.getState();
 
       // Update card position using the new function
-      reorderCards(cardId, column, beforeId);
+      reorderCards(cardId, column, beforeId, user?.id);
     }
 
     // Hide the burn barrel after successful placement

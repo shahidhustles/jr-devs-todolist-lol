@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { FiPlus } from "react-icons/fi";
 import { v4 as uuidv4 } from "uuid";
 import { useColumnStore } from "@/store/useColumnStore";
+import { useUser } from "@clerk/nextjs";
 
 type AddCardProps = {
   column: string;
@@ -15,6 +16,8 @@ export default function AddCard({ column }: AddCardProps) {
   const [adding, setAdding] = useState<boolean>(false);
   const { addCard } = useColumnStore();
 
+  const { user } = useUser();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -23,6 +26,7 @@ export default function AddCard({ column }: AddCardProps) {
       id: uuidv4(),
       title,
       column: column,
+      userId: user?.id,
     });
 
     setAdding(false);
